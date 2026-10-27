@@ -6,13 +6,13 @@
 <title>關東關西親子行 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#FFFCF6;--ink:#3E3A39;--pink:#F2A497;--yellow:#F6D27A;--blue:#A8D3E6;--green:#B9DAA5;--b:3px solid var(--ink);--r:22px;color-scheme:light;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-behavior:smooth;scroll-padding-top:calc(72px + env(safe-area-inset-top,0px))}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Huninn","jf-openhuninn","Noto Sans TC",system-ui,sans-serif;line-height:1.7;font-size:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Huninn","Noto Sans TC",system-ui,sans-serif;line-height:1.7;font-size:16px}
 nav{position:fixed;top:0;left:0;right:0;z-index:20;background:var(--bg);border-bottom:var(--b);padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;display:flex;gap:6px;justify-content:center;overflow-x:auto}
 nav a{color:var(--ink);text-decoration:none;border:var(--b);border-radius:99px;padding:2px 14px;white-space:nowrap;font-size:15px;background:var(--bg)}
 nav a:nth-child(1){background:var(--pink)}nav a:nth-child(2){background:var(--yellow)}nav a:nth-child(3){background:var(--blue)}nav a:nth-child(4){background:var(--green)}nav a:nth-child(5){background:var(--pink)}
@@ -145,83 +145,38 @@ footer{text-align:center;margin-top:36px;font-size:14px}
 <footer>一路平安，玩得開心！</footer>
 </main>
 <script>
-window.addEventListener("DOMContentLoaded", function() {
-  var D=[
-  {d:"11/19",w:"四",n:"抵達東京",s:"住立川民宿",i:[
-  ["06:00","立川民宿出發前往桃園機場","電車"],["08:00","抵達桃園機場報到","飛機"],["09:30","CI100 起飛（TPE T2）","飛機",1],["13:30","抵達成田機場 T2","飛機"],["14:23","N’EX 成田→東京（15:15 抵達）","電車"],["15:21","JR 東京→立川（16:04 抵達）","電車"],["16:04","抵達立川站","步行"],["16:00–20:00","飯店附近逛逛或休息","步行"]]},
-  {d:"11/20",w:"五",n:"東京郊區散策",s:"住立川民宿",i:[["10:30","應現院　笠法善神法會","法會",1],["下午","東京郊區散策，彈性安排","步行"]]},
-  {d:"11/21",w:"六",n:"山梨一日遊",s:"住東橫inn 福生或昭島",i:[["08:00","出發前往取車","步行"],["09:00","立川南口取車，載行李到東橫inn昭島寄放","自駕"],["10:00–18:00","山梨散策","自駕",1],["18:00–20:00","返回昭島，20:00 前還車","自駕"]]},
-  {d:"11/22",w:"日",n:"真如苑法會日",s:"住東橫inn 福生或昭島（已預約）",i:[["08:00","起床吃早餐","步行"],["09:00","前往應現院，參加圓成靈廟莊嚴法會","法會",1],["10:30","真如靈廟圓成莊嚴","法會",1],["16:30–17:30","前往總本部參拜靈廟","法會",1],["晚上","昭島逛商場，或到立川用餐","步行"]]},
-  {d:"11/23",w:"一",n:"移動到京都",s:"日本勤勞感謝日",i:[["08:00","起床用餐","步行"],["09:16–10:17","昭島→東京","電車"],["10:39 或 10:45","東京搭車前往京都（約 13:00 抵達）","電車"],["13:00","京都車站前取車","自駕"],["15:00–18:00","東福寺（不確定）","步行"],["順路","京都 高島屋 S.C. 皮克敏商店","備註"],["備註","11/23 晚住宿請再確認（11/24 起住枚方民宿）","備註"]]},
-  {d:"11/24",w:"二",n:"枚方日",s:"住枚方民宿・自駕",i:[["早上","參拜悠音精舍","法會",1],["下午","枚方公園 ひらかたパーク","自駕"]]},
-  {d:"11/25",w:"三",n:"宇治散步",s:"住枚方民宿・自駕",i:[["白天","宇治 平等院","自駕",1],["下午","宇治商店街","步行"]]},
-  {d:"11/26",w:"四",n:"關西本部＋神戶",s:"住東橫inn 難波",i:[["10:30 或 14:30","真如苑關西本部","法會",1],["16:00–18:00","神戶港口附近（可考慮）","自駕"],["20:00 前","なんばターミナル店還車","自駕"],["晚上","入住東橫inn難波","步行"]]},
-  {d:"11/27",w:"五",n:"大阪港灣與美食",s:"住東橫inn 難波",i:[["上午","天保山港灣村：大摩天輪、帆船型觀光船、大阪樂高樂園探索中心","電車",1],["午餐","天保山市場購物中心","步行"],["下午","道頓堀、心齋橋商店街","步行"],["順路","大阪梅田 LUCUA South 13 樓 皮克敏商店","備註"]]},
-  {d:"11/28",w:"六",n:"回家",s:"關西機場",i:[["07:30","起床吃早餐","步行"],["08:45","搭南海電鐵前往關西機場","電車"],["09:30","關西機場報到","飛機"],["12:20","JX821 起飛（KIX T1）","飛機",1],["13:35","抵達台北桃園 T1","飛機"]]}];
-  
-  var tabs=document.getElementById("tabs"),tl=document.getElementById("tl"),dh=document.getElementById("dh");
-  if(tabs && tl && dh){
-    D.forEach(function(x,k){
-      var b=document.createElement("button");
-      b.className="tab";
-      b.setAttribute("role","tab");
-      b.innerHTML="<small>"+x.w+"</small><b>"+x.d.split("/")[1]+"</b>";
-      b.onclick=function(){show(k,true)};
-      tabs.appendChild(b);
-    });
-    function show(k,anim){
-      var x=D[k];
-      Array.prototype.forEach.call(tabs.children,function(t,j){t.setAttribute("aria-selected",j==k);t.classList.remove("bounce")});
-      var t=tabs.children[k];
-      if(anim && t){void t.offsetWidth;t.classList.add("bounce");t.scrollIntoView({inline:"center",block:"nearest"})}
-      dh.innerHTML="<h3>"+x.d+"（"+x.w+"）"+x.n+"</h3><p>"+x.s+"</p>";
-      tl.className="tl";void tl.offsetWidth;tl.className="tl pop";
-      tl.innerHTML=x.i.map(function(e,j){return '<li class="'+(e[3]?"must":"")+'" style="--i:'+j+'"><span class="tm">'+e[0]+'</span><span class="tag t-'+e[2]+'">'+e[2]+'</span>'+e[1]+(e[3]?' <span class="must-b">必去</span>':"")+"</li>"}).join("");
-    }
-    show(0,false);
-  }
-
-  var T=["確認護照效期（全家 5 人）","線上填寫 Visit Japan Web","兒童汽座預約（5 歲、4 歲，租車需要）","國際駕照或日文譯本、台灣駕照","租車預約確認（立川、京都、難波）","購買 eSIM 或網路分享器","兌換日幣、準備 IC 卡（Suica/ICOCA）","確認 11/23 晚住宿","查詢 11/21–11/23 高速公路與 ETC","小孩零食、藥品、替換衣物","行動電源與充電線","真如苑法會服裝與參拜資料"];
-  var S=[["立川民宿","11/19 – 11/21","離立川站近，抵達當天先休息"],["東橫inn 福生或昭島","11/21 – 11/23","已預約；11/21 先到昭島寄放行李"],["枚方民宿","11/24 – 11/26","自駕；11/23 晚請再確認"],["東橫inn 難波","11/26 – 11/28","11/28 搭南海電鐵到關西機場"]];
-  
-  var stayEl=document.getElementById("stays");
-  if(stayEl){
-    stayEl.innerHTML=S.map(function(s){return '<div class="card stay"><h3>'+s[0]+"</h3><p>"+s[1]+"</p><p>"+s[2]+"</p></div>"}).join("");
-  }
-
-  var st={};try{st=JSON.parse(localStorage.getItem("jp26")||"{}")}catch(e){}
-  var ul=document.getElementById("todos");
-  if(ul){
-    T.forEach(function(s,k){
-      var li=document.createElement("li"),l=document.createElement("label"),c=document.createElement("input");
-      c.type="checkbox";c.checked=!!st[k];
-      c.onchange=function(){st[k]=c.checked;try{localStorage.setItem("jp26",JSON.stringify(st))}catch(e){}prog()};
-      var sp=document.createElement("span");sp.textContent=s;
-      l.appendChild(c);l.appendChild(sp);li.appendChild(l);ul.appendChild(li);
-    });
-  }
-
-  function prog(){
-    var n=0;T.forEach(function(_,k){if(st[k])n++});
-    var pg=document.getElementById("pg");
-    if(pg) pg.style.width=(n/T.length*100)+"%";
-  }
-  prog();
-
-  var go=new Date("2026-11-19T09:30:00+08:00"),end=new Date("2026-11-28T13:35:00+08:00");
-  function tick(){
-    var n=new Date(),df=go-n;
-    var cdLabel=document.getElementById("cdLabel");
-    if(df<=0){if(cdLabel) cdLabel.textContent=n>end?"旅程結束，歡迎回家":"旅程進行中，玩得開心";df=0}
-    var p=function(v){return String(v).padStart(2,"0")};
-    var cd=document.getElementById("cd"),ch=document.getElementById("ch"),cm=document.getElementById("cm"),cs=document.getElementById("cs");
-    if(cd) cd.textContent=Math.floor(df/864e5);
-    if(ch) ch.textContent=p(Math.floor(df/36e5)%24);
-    if(cm) cm.textContent=p(Math.floor(df/6e4)%60);
-    if(cs) cs.textContent=p(Math.floor(df/1e3)%60);
-  }
-  tick();setInterval(tick,1000);
-});
+var D=[
+{d:"11/19",w:"四",n:"抵達東京",s:"住立川民宿",i:[
+["06:00","出發前往桃園機場","自駕"],["08:00","抵達桃園機場報到","飛機"],["09:30","CI100 起飛（TPE T2）","飛機",1],["13:30","抵達成田機場 T2","飛機"],["14:23","N’EX 成田→東京（15:15 抵達）","電車"],["15:21","JR 東京→立川（16:04 抵達）","電車"],["16:04","抵達立川站","步行"],["16:00–20:00","飯店附近逛逛或休息","步行"]]},
+{d:"11/20",w:"五",n:"東京郊區散策",s:"住立川民宿",i:[["10:30","應現院　笠法善神法會","法會",1],["下午","東京郊區散策，彈性安排","步行"]]},
+{d:"11/21",w:"六",n:"山梨一日遊",s:"住東橫inn 福生或昭島",i:[["08:00","出發前往取車","步行"],["09:00","立川南口取車，載行李到東橫inn昭島寄放","自駕"],["10:00–18:00","山梨散策","自駕",1],["18:00–20:00","返回昭島，20:00 前還車","自駕"]]},
+{d:"11/22",w:"日",n:"真如苑法會日",s:"住東橫inn 福生或昭島（已預約）",i:[["08:00","起床吃早餐","步行"],["09:00","前往應現院，參加圓成靈廟莊嚴法會","法會",1],["10:30","真如靈廟圓成莊嚴","法會",1],["16:30–17:30","前往總本部參拜靈廟","法會",1],["晚上","昭島逛商場，或到立川用餐","步行"]]},
+{d:"11/23",w:"一",n:"移動到京都",s:"日本勤勞感謝日",i:[["08:00","起床用餐","步行"],["09:16–10:17","昭島→東京","電車"],["10:39 或 10:45","東京搭車前往京都（約 13:00 抵達）","電車"],["13:00","京都車站前取車","自駕"],["15:00–18:00","東福寺（不確定）","步行"],["順路","京都 高島屋 S.C. 皮克敏商店","備註"],["備註","11/23 起住枚方民宿","備註"]]},
+{d:"11/24",w:"二",n:"枚方日",s:"住枚方民宿・自駕",i:[["早上","參拜悠音精舍","法會",1],["下午","枚方公園 ひらかたパーク","自駕"]]},
+{d:"11/25",w:"三",n:"宇治散步",s:"住枚方民宿・自駕",i:[["白天","宇治 平等院","自駕",1],["下午","宇治商店街","步行"]]},
+{d:"11/26",w:"四",n:"關西本部＋神戶",s:"住東橫inn 難波",i:[["10:30 或 14:30","真如苑關西本部","法會",1],["16:00–18:00","神戶港口附近（可考慮）","自駕"],["20:00 前","なんばターミナル店還車","自駕"],["晚上","入住東橫inn難波","步行"]]},
+{d:"11/27",w:"五",n:"大阪港灣與美食",s:"住東橫inn 難波",i:[["上午","天保山港灣村：大摩天輪、帆船型觀光船、大阪樂高樂園探索中心","電車",1],["午餐","天保山市場購物中心","步行"],["下午","道頓堀、心齋橋商店街","步行"],["順路","大阪梅田 LUCUA South 13 樓 皮克敏商店","備註"]]},
+{d:"11/28",w:"六",n:"回家",s:"關西機場",i:[["07:30","起床吃早餐","步行"],["08:45","搭南海電鐵前往關西機場","電車"],["09:30","關西機場報到","飛機"],["12:20","JX821 起飛（KIX T1）","飛機",1],["13:35","抵達台北桃園 T1","飛機"]]}];
+var tabs=document.getElementById("tabs"),tl=document.getElementById("tl"),dh=document.getElementById("dh");
+D.forEach(function(x,k){var b=document.createElement("button");b.className="tab";b.setAttribute("role","tab");b.innerHTML="<small>"+x.w+"</small><b>"+x.d.split("/")[1]+"</b>";b.onclick=function(){show(k,true)};tabs.appendChild(b)});
+function show(k,anim){var x=D[k];Array.prototype.forEach.call(tabs.children,function(t,j){t.setAttribute("aria-selected",j==k);t.classList.remove("bounce")});
+var t=tabs.children[k];if(anim){void t.offsetWidth;t.classList.add("bounce");t.scrollIntoView({inline:"center",block:"nearest"})}
+dh.innerHTML="<h3>"+x.d+"（"+x.w+"）"+x.n+"</h3><p>"+x.s+"</p>";
+tl.className="tl";void tl.offsetWidth;tl.className="tl pop";
+tl.innerHTML=x.i.map(function(e,j){return '<li class="'+(e[3]?"must":"")+'" style="--i:'+j+'"><span class="tm">'+e[0]+'</span><span class="tag t-'+e[2]+'">'+e[2]+'</span>'+e[1]+(e[3]?' <span class="must-b">必去</span>':"")+"</li>"}).join("")}
+show(0,false);
+var T=["確認護照效期（全家 5 人）","線上填寫 Visit Japan Web","兒童汽座預約（5 歲、4 歲，租車需要）","國際駕照或日文譯本、台灣駕照","租車預約確認（立川、京都、難波）","購買 eSIM 或網路分享器","兌換日幣、準備 IC 卡（Suica/ICOCA）","確認枚方民宿入住時間與停車位","查詢 11/21–11/23 高速公路與 ETC","小孩零食、藥品、替換衣物","行動電源與充電線","真如苑法會服裝與參拜資料"];
+var S=[["立川民宿","11/19 – 11/21","離立川站近，抵達當天先休息"],["東橫inn 福生或昭島","11/21 – 11/23","已預約；11/21 先到昭島寄放行李"],["枚方民宿","11/23 – 11/26","自駕；11/23 取車後入住"],["東橫inn 難波","11/26 – 11/28","11/28 搭南海電鐵到關西機場"]];
+document.getElementById("stays").innerHTML=S.map(function(s){return '<div class="card stay"><h3>'+s[0]+"</h3><p>"+s[1]+"</p><p>"+s[2]+"</p></div>"}).join("");
+var st={};try{st=JSON.parse(localStorage.getItem("jp26")||"{}")}catch(e){}
+var ul=document.getElementById("todos");
+T.forEach(function(s,k){var li=document.createElement("li"),l=document.createElement("label"),c=document.createElement("input");c.type="checkbox";c.checked=!!st[k];c.onchange=function(){st[k]=c.checked;try{localStorage.setItem("jp26",JSON.stringify(st))}catch(e){}prog()};var sp=document.createElement("span");sp.textContent=s;l.appendChild(c);l.appendChild(sp);li.appendChild(l);ul.appendChild(li)});
+function prog(){var n=0;T.forEach(function(_,k){if(st[k])n++});document.getElementById("pg").style.width=(n/T.length*100)+"%"}prog();
+var go=new Date("2026-11-19T09:30:00+08:00"),end=new Date("2026-11-28T13:35:00+08:00");
+function tick(){var n=new Date(),df=go-n;if(df<=0){document.getElementById("cdLabel").textContent=n>end?"旅程結束，歡迎回家":"旅程進行中，玩得開心";df=0}
+var p=function(v){return String(v).padStart(2,"0")};
+document.getElementById("cd").textContent=Math.floor(df/864e5);document.getElementById("ch").textContent=p(Math.floor(df/36e5)%24);document.getElementById("cm").textContent=p(Math.floor(df/6e4)%60);document.getElementById("cs").textContent=p(Math.floor(df/1e3)%60)}
+tick();setInterval(tick,1000);
 </script>
 </body>
 </html>
