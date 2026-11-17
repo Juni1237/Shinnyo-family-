@@ -229,7 +229,7 @@ function tick(){var n=new Date(),df=go-n;if(df<=0){document.getElementById("cdLa
 var p=function(v){return String(v).padStart(2,"0")};
 document.getElementById("cd").textContent=Math.floor(df/864e5);document.getElementById("ch").textContent=p(Math.floor(df/36e5)%24);document.getElementById("cm").textContent=p(Math.floor(df/6e4)%60);document.getElementById("cs").textContent=p(Math.floor(df/1e3)%60)}
 tick();setInterval(tick,1000);
-var P=[["基本禮貌","ありがとうございます|Arigatou gozaimasu|謝謝您;;すみません|Sumimasen|不好意思／借過／請問一下;;大丈夫です|Daijoubu desu|沒關係／不用了／可以;;はい／いいえ|Hai / iie|是／不是;;わかりません|Wakarimasen|我聽不懂／我不明白"],
+var PH=[["基本禮貌","ありがとうございます|Arigatou gozaimasu|謝謝您;;すみません|Sumimasen|不好意思／借過／請問一下;;大丈夫です|Daijoubu desu|沒關係／不用了／可以;;はい／いいえ|Hai / iie|是／不是;;わかりません|Wakarimasen|我聽不懂／我不明白"],
 ["飯店住宿","チェックインをお願いします。|Chekkuin o onegaishimasu.|我要辦理入住;;予約しています。|Yoyaku shiteimasu.|我有預約;;〇〇の名前で予約しています。|〇〇 no namae de yoyaku shiteimasu.|我用〇〇的名字預訂;;パスポートです。|Pasupooto desu.|這是護照;;タオルをもう一枚ください。|Taoru o mou ichimai kudasai.|請再給我一條毛巾;;荷物を預けてもいいですか？|Nimotsu o azukete mo ii desu ka?|可以寄放行李嗎？"],
 ["人數說法","何名様ですか？|Nan-mei sama desu ka?|請問幾位？;;8名です。|Hachi-mei desu.|8位;;5名です。|Go-mei desu.|5位;;大人5名、子供3名です。|Otona go-mei, kodomo san-mei desu.|5大3小;;大人2名、子供3名です。|Otona ni-mei, kodomo san-mei desu.|2大3小;;お子様は何歳ですか？|O-ko-sama wa nan-sai desu ka?|小孩幾歲？;;10歳、5歳、4歳です。|Jussai, go-sai, yon-sai desu.|10歲、5歲、4歲"],
 ["餐廳用餐","メニューをください。|Menyuu o kudasai.|請給我菜單;;おすすめは何ですか？|Osusume wa nan desu ka?|有什麼推薦的？;;これをください。|Kore o kudasai.|我要這個;;これを2つください。|Kore o futatsu kudasai.|我要兩份這個;;子供用の食器をください。|Kodomo-you no shokki o kudasai.|請給我兒童餐具;;子供用の椅子はありますか？|Kodomo-you no isu wa arimasu ka?|有兒童椅嗎？;;お水をください。|Omizu o kudasai.|請給我水;;お箸をください。|Ohashi o kudasai.|請給我筷子;;取り皿をください。|Torizara o kudasai.|請給我分食小盤;;お会計をお願いします。|Okaikei o onegaishimasu.|麻煩結帳;;別々に払えますか？|Betsubetsu ni haraemasu ka?|可以分開付款嗎？;;持ち帰りでお願いします。|Mochikaeri de onegaishimasu.|我要外帶;;店内でお願いします。|Tennai de onegaishimasu.|我要內用"],
@@ -238,12 +238,12 @@ var P=[["基本禮貌","ありがとうございます|Arigatou gozaimasu|謝謝
 ["數量","ひとつ|Hitotsu|一個;;ふたつ|Futatsu|兩個;;みっつ|Mittsu|三個;;よっつ|Yottsu|四個;;いつつ|Itsutsu|五個;;むっつ|Muttsu|六個;;ななつ|Nanatsu|七個;;やっつ|Yattsu|八個;;ここのつ|Kokonotsu|九個;;とお|Too|十個"]];
 var ptb=document.getElementById("ptabs"),pbd=document.getElementById("pbody");
 function pshow(k){Array.prototype.forEach.call(ptb.children,function(t,j){t.setAttribute("aria-selected",j==k)});pbd.innerHTML="";
-P[k][1].split(";;").forEach(function(r){var f=r.split("|"),d=document.createElement("div");d.className="ph";
+PH[k][1].split(";;").forEach(function(r){var f=r.split("|"),d=document.createElement("div");d.className="ph";
 var a=document.createElement("div");a.className="ja";a.textContent=f[0];var b=document.createElement("div");b.className="ro";b.textContent=f[1];var c=document.createElement("div");c.className="zh";c.textContent=f[2];
 var L=document.createElement("div");L.style.flex="1";L.appendChild(a);L.appendChild(b);L.appendChild(c);var x=document.createElement("button");x.type="button";x.className="spk";x.textContent="🔊";x.setAttribute("aria-label","播放日語發音");x.onclick=function(){psay(f[0])};d.appendChild(L);d.appendChild(x);pbd.appendChild(d)})}
 function psay(t){var pm=document.getElementById("pmsg");pm.hidden=true;if(!("speechSynthesis" in window)||!window.SpeechSynthesisUtterance){pm.textContent="這個瀏覽器不支援語音播放，請改用 Android 的 Chrome。";pm.hidden=false;return}
 var v=speechSynthesis.getVoices(),j=v.filter(function(x){return /^ja/i.test(x.lang)})[0],u=new SpeechSynthesisUtterance(t.replace(/〇〇/g,""));u.lang="ja-JP";u.rate=.9;if(j)u.voice=j;else if(v.length){pm.textContent="找不到日語語音，請到手機「設定→語言→文字轉語音」安裝日文語音。";pm.hidden=false}speechSynthesis.cancel();speechSynthesis.speak(u)}
-P.forEach(function(c,k){var t=document.createElement("button");t.type="button";t.className="tab";t.setAttribute("role","tab");t.textContent=c[0];t.onclick=function(){pshow(k)};ptb.appendChild(t)});pshow(0);
+PH.forEach(function(c,k){var t=document.createElement("button");t.type="button";t.className="tab";t.setAttribute("role","tab");t.textContent=c[0];t.onclick=function(){pshow(k)};ptb.appendChild(t)});pshow(0);
 
 var PROXY="";/* 若有自己的翻譯代理(Cloudflare Worker)，填網址：接收 POST {text,from,to}，回傳 {text} */
 function cp(t,b){var done=function(){var o=b.textContent;b.textContent="✓ 已複製";b.classList.add("ok");setTimeout(function(){b.textContent=o;b.classList.remove("ok")},1500)};
