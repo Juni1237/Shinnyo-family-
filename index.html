@@ -190,7 +190,7 @@ footer{text-align:center;margin-top:36px;font-size:14px}
 <textarea id="tin" rows="4" placeholder="輸入中文，例如：請問停車場在哪裡？" aria-label="輸入要翻譯的文字"></textarea>
 <div class="bt"><button type="button" id="tgo" class="go">翻譯成日文</button><button type="button" id="tclr">清除</button></div>
 <div id="tmsg" class="warn" hidden></div><div id="tout"></div>
-<p class="note">需連網使用。首次產生假名與羅馬拼音時會下載約 17 MB 的字典。機器翻譯可能有誤，重要場合請讓店員確認。</p></div></section>
+<p class="note">需連網使用。翻譯結果會立即顯示；假名與羅馬拼音在背景載入（首次需下載約 17 MB 字典，可能較慢）。機器翻譯可能有誤，重要場合請讓店員確認。</p></div></section>
 <footer>一路平安，玩得開心！</footer>
 </main>
 <script>
@@ -251,13 +251,22 @@ if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t)
 function fb(t,done){var a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.select();try{if(document.execCommand("copy"))done()}catch(e){}document.body.removeChild(a)}
 var dir="zj",tin=document.getElementById("tin"),tgo=document.getElementById("tgo"),tout=document.getElementById("tout"),tmsg=document.getElementById("tmsg");
 function msg(t){tmsg.textContent=t;tmsg.hidden=!t}
-function mode(d){dir=d;document.getElementById("m1").className=d=="zj"?"on":"";document.getElementById("m2").className=d=="jz"?"on":"";tgo.textContent=d=="zj"?"翻譯成日文":"翻譯成中文";tin.placeholder=d=="zj"?"輸入中文，例如：請問停車場在哪裡？":"輸入日文，例如：駐車場はどこですか？";tout.innerHTML="";msg("")}
+var RQ=0;
+function setBusy(b){tgo.disabled=b;tgo.textContent=b?"翻譯中…":(dir=="zj"?"翻譯成日文":"翻譯成中文")}
+function reset(){RQ++;tout.innerHTML="";msg("");setBusy(false)}
+function mode(d){dir=d;document.getElementById("m1").className=d=="zj"?"on":"";document.getElementById("m2").className=d=="jz"?"on":"";tin.placeholder=d=="zj"?"輸入中文，例如：請問停車場在哪裡？":"輸入日文，例如：駐車場はどこですか？";reset()}
 document.getElementById("m1").onclick=function(){mode("zj")};document.getElementById("m2").onclick=function(){mode("jz")};
-document.getElementById("tclr").onclick=function(){tin.value="";tout.innerHTML="";msg("");tin.focus()};
-function tf(u,o){var c=new AbortController(),t=setTimeout(function(){c.abort()},12000);o=o||{};o.signal=c.signal;return fetch(u,o).then(function(r){clearTimeout(t);if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})}
-async function mt(q,f,t){if(PROXY){var p=await tf(PROXY,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:q,from:f,to:t})});if(p&&p.text)return p.text;throw new Error("代理回應異常")}
-try{var g=await tf("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl="+f+"&tl="+t+"&q="+encodeURIComponent(q));var s=g[0].map(function(x){return x[0]}).join("");if(s)return s}catch(e){}
-var m=await tf("https://api.mymemory.translated.net/get?q="+encodeURIComponent(q)+"&langpair="+f+"|"+t);if(m.responseStatus==200&&m.responseData&&m.responseData.translatedText)return m.responseData.translatedText;throw new Error("翻譯服務沒有回應")}
+document.getElementById("tclr").onclick=function(){tin.value="";reset();tin.focus()};
+function tf(u,o){var c=new AbortController(),t=setTimeout(function(){c.abort()},12000);o=o||{};o.signal=c.signal;
+return fetch(u,o).then(function(r){if(!r.ok){var e=new Error("HTTP "+r.status);e.status=r.status;throw e}return r.json()}).then(function(j){clearTimeout(t);return j},function(e){clearTimeout(t);throw e})}
+function ce(e){if(!e)return"未知錯誤";if(e.name=="AbortError")return"連線逾時（12 秒內沒有回應）";if(e.status==429)return"請求過於頻繁或超過使用額度（HTTP 429）";if(e.status)return"服務回應錯誤（"+e.message+"）";if(e.name=="SyntaxError")return"回傳格式錯誤";if(e.name=="TypeError")return"無法連線（網路中斷、被瀏覽器的跨網域 CORS 限制或所在環境封鎖，或服務暫時不可用）";return e.message||String(e)}
+async function mt(q,f,t){var er=[];
+if(PROXY){try{var p=await tf(PROXY,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:q,from:f,to:t})});if(p&&p.text)return p.text;er.push("代理：回應內容為空")}catch(e){er.push("代理："+ce(e))}}
+try{var g=await tf("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl="+f+"&tl="+t+"&q="+encodeURIComponent(q));var s=((g&&g[0])||[]).map(function(x){return x[0]}).join("");if(s)return s;er.push("Google 翻譯：回傳內容為空")}catch(e){er.push("Google 翻譯："+ce(e))}
+try{if(q.length>500)throw new Error("文字超過 MyMemory 的 500 字上限");var m=await tf("https://api.mymemory.translated.net/get?q="+encodeURIComponent(q)+"&langpair="+f+"|"+t);var r=m&&m.responseData&&m.responseData.translatedText;
+if(m&&(m.quotaFinished||/MYMEMORY WARNING/i.test(r||"")))throw new Error("今日免費額度已用完，請明天再試");
+if(m&&+m.responseStatus==200&&r)return r;throw new Error("回應異常（狀態 "+(m&&m.responseStatus)+"）"+(m&&m.responseDetails?"："+m.responseDetails:""))}catch(e){er.push("MyMemory："+ce(e))}
+throw new Error(er.join("；"))}
 var KT={};"あa いi うu えe おo かka きki くku けke こko さsa しshi すsu せse そso たta ちchi つtsu てte とto なna にni ぬnu ねne のno はha ひhi ふfu へhe ほho まma みmi むmu めme もmo やya ゆyu よyo らra りri るru れre ろro わwa ゐi ゑe をo がga ぎgi ぐgu げge ごgo ざza じji ずzu ぜze ぞzo だda ぢji づzu でde どdo ばba びbi ぶbu べbe ぼbo ぱpa ぴpi ぷpu ぺpe ぽpo ゔvu ぁa ぃi ぅu ぇe ぉo".split(" ").forEach(function(e){KT[e.charAt(0)]=e.slice(1)});
 var PU={"。":". ","、":", ","？":"? ","！":"! ","「":" “","」":"” "},MC={a:"ā",i:"ī",u:"ū",e:"ē",o:"ō"};
 function k2h(s){return s.replace(/[\u30A1-\u30F6]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-96)})}
@@ -295,9 +304,10 @@ out+=r+" "});
 out=out.replace(/ +/g," ").trim().replace(/(^|[.!?]\s+)([a-zāīūēō])/g,function(m,a,b){return a+b.toUpperCase()});
 return{hira:H.join(""),rom:out}}
 var KB=[["kuromoji/build/kuromoji.js","kuromoji/dict/"],["https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/build/kuromoji.js","https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/"],["https://unpkg.com/kuromoji@0.1.2/build/kuromoji.js","https://unpkg.com/kuromoji@0.1.2/dict/"]],tkz=null;
-function ld(u){return new Promise(function(res,rej){var e=document.createElement("script");e.src=u;e.onload=res;e.onerror=function(){rej(new Error("無法載入 "+u))};document.head.appendChild(e)})}
-function bd(d){return new Promise(function(res,rej){kuromoji.builder({dictPath:d}).build(function(e,t){e?rej(new Error("字典載入失敗 "+d)):res(t)})})}
-function loadK(){if(tkz)return tkz;tkz=(async function(){var er=[];for(var i=0;i<KB.length;i++){try{if(typeof kuromoji==="undefined")await ld(KB[i][0]);return await bd(KB[i][1])}catch(e){er.push(e.message)}}throw new Error(er.join("；"))})();tkz.catch(function(){tkz=null});return tkz}
+function tmo(p,ms,m){return new Promise(function(res,rej){var t=setTimeout(function(){rej(new Error(m))},ms);p.then(function(v){clearTimeout(t);res(v)},function(e){clearTimeout(t);rej(e)})})}
+function ld(u){var e;return tmo(new Promise(function(res,rej){e=document.createElement("script");e.src=u;e.onload=res;e.onerror=function(){rej(new Error("無法載入 "+u+"（網址不存在或被封鎖）"))};document.head.appendChild(e)}),15000,"載入逾時（15 秒）："+u).catch(function(x){try{if(e&&e.parentNode)e.parentNode.removeChild(e)}catch(y){}throw x})}
+function bd(d){return tmo(new Promise(function(res,rej){kuromoji.builder({dictPath:d}).build(function(e,t){e?rej(new Error("字典載入失敗 "+d+(e.message?"："+e.message:""))):res(t)})}),60000,"字典下載逾時（60 秒）："+d)}
+function loadK(){if(tkz)return tkz;tkz=tmo((async function(){var er=[];for(var i=0;i<KB.length;i++){try{if(typeof kuromoji==="undefined")await ld(KB[i][0]);return await bd(KB[i][1])}catch(e){er.push(e.message)}}throw new Error(er.join("；"))})(),100000,"整體載入逾時（100 秒）");tkz.catch(function(){tkz=null});return tkz}
 var JV=null;function pv(){var v=speechSynthesis.getVoices();JV=v.filter(function(x){return /^ja/i.test(x.lang)})[0]||null;return v.length}
 if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
 function say(t){if(!("speechSynthesis" in window)||!window.SpeechSynthesisUtterance){msg("這個瀏覽器不支援語音播放，請改用 Android 的 Chrome。");return}
@@ -307,13 +317,21 @@ speechSynthesis.cancel();setTimeout(function(){speechSynthesis.speak(u)},80)}
 function rf(l,t,cls,sp){var d=document.createElement("div");d.className="rf "+cls;var s=document.createElement("small");s.textContent=l;var v=document.createElement("div");v.className="v";v.textContent=t;var bt=document.createElement("div");bt.className="bt";var b=document.createElement("button");b.type="button";b.textContent="複製";b.onclick=function(){cp(t,b)};bt.appendChild(b);
 if(sp){var p=document.createElement("button");p.type="button";p.style.background="#E0463A";p.style.color="#fff";p.textContent="🔊 播放日語發音";p.onclick=function(){say(t)};bt.appendChild(p)}
 d.appendChild(s);d.appendChild(v);d.appendChild(bt);tout.appendChild(d)}
-tgo.onclick=async function(){var q=tin.value.trim();if(!q){msg("請先輸入文字");return}var lb=tgo.textContent;tgo.disabled=true;tgo.textContent="翻譯中…";tout.innerHTML="";msg("");
-try{var ja,zh;if(dir=="zj"){zh=q;ja=await mt(q,"zh-TW","ja")}else{ja=q;zh=await mt(q,"ja","zh-TW")}
-var ka="",ro="",ke=0;try{msg("首次使用，正在下載日文字典（約 17 MB），請稍候…");var tz=await loadK();var rr=rom(tz.tokenize(ja));msg("");if(rr){ka=rr.hira;ro=rr.rom}else ke="翻譯完成，但這句含有無法取得可靠讀音的漢字，因此不顯示假名與羅馬拼音，以免誤導。"}catch(e){msg("");ke="翻譯完成，但假名／羅馬拼音元件載入失敗："+e.message+"。請確認網路連線。"}
-rf("日文原文",ja,"big",1);if(!ke){rf("假名讀音",ka,"");rf("Romaji 羅馬拼音",ro,"ro")}rf(dir=="zj"?"中文解釋（你輸入的原句）":"中文翻譯",zh,"");
-if(ke)msg(ke)}
-catch(e){msg("翻譯失敗："+(e&&e.name=="AbortError"?"連線逾時":e.message)+"。請檢查網路後再試一次。")}
-finally{tgo.disabled=false;tgo.textContent=lb}};
+function rc(l,cls){var d=document.createElement("div");d.className="rf "+cls;var s=document.createElement("small");s.textContent=l;var v=document.createElement("div");v.className="v";var bt=document.createElement("div");bt.className="bt";
+var b=document.createElement("button");b.type="button";b.textContent="複製";b.disabled=true;b.onclick=function(){cp(v.textContent,b)};
+var r=document.createElement("button");r.type="button";r.textContent="重試";r.style.display="none";bt.appendChild(b);bt.appendChild(r);d.appendChild(s);d.appendChild(v);d.appendChild(bt);tout.appendChild(d);
+return{st:function(t){v.textContent=t;v.style.opacity=.6;b.disabled=true;r.style.display="none"},ok:function(t){v.textContent=t;v.style.opacity=1;b.disabled=false;r.style.display="none"},bad:function(t,fn){v.textContent=t;v.style.opacity=1;b.disabled=true;r.style.display="";r.onclick=fn}}}
+function yomi(ja,ka,ro,my){var w="讀音載入中…（首次需下載日文字典，不影響上方翻譯結果）";ka.st(w);ro.st(w);
+loadK().then(function(tz){if(my!==RQ)return;var rr;try{rr=rom(tz.tokenize(ja))}catch(e){throw new Error("讀音轉換失敗："+e.message)}
+if(rr){ka.ok(rr.hira);ro.ok(rr.rom)}else{var n="這句含有無法取得可靠讀音的漢字，因此不顯示假名與羅馬拼音，以免誤導。";ka.st(n);ro.st(n)}}).catch(function(e){if(my!==RQ)return;var m="讀音元件載入失敗："+ce(e),f=function(){yomi(ja,ka,ro,my)};ka.bad(m,f);ro.bad(m,f)})}
+tgo.onclick=async function(){var q=tin.value.trim();if(!q){msg("請先輸入文字");return}var my=++RQ,d0=dir;setBusy(true);tout.innerHTML="";msg("");
+try{var ja,zh;if(d0=="zj"){zh=q;ja=await mt(q,"zh-TW","ja")}else{ja=q;zh=await mt(q,"ja","zh-TW")}
+if(my!==RQ)return;
+rf("日文原文",ja,"big",1);var ka=rc("假名讀音",""),ro=rc("Romaji 羅馬拼音","ro");rf(d0=="zj"?"中文解釋（你輸入的原句）":"中文翻譯",zh,"");
+setBusy(false);yomi(ja,ka,ro,my)}
+catch(e){if(my!==RQ)return;msg("翻譯失敗："+ce(e)+"。請檢查網路後再試一次。")}
+finally{if(my===RQ)setBusy(false)}};
+
 </script>
 </body>
 </html>
