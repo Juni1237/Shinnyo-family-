@@ -190,7 +190,7 @@ footer{text-align:center;margin-top:36px;font-size:14px}
 <textarea id="tin" rows="4" placeholder="輸入中文，例如：請問停車場在哪裡？" aria-label="輸入要翻譯的文字"></textarea>
 <div class="bt"><button type="button" id="tgo" class="go">翻譯成日文</button><button type="button" id="tclr">清除</button></div>
 <div id="tmsg" class="warn" hidden></div><div id="tout"></div>
-<p class="note">需連網使用。翻譯結果會立即顯示；假名與羅馬拼音在背景載入（首次需下載約 17 MB 字典，可能較慢）。機器翻譯可能有誤，重要場合請讓店員確認。</p></div></section>
+<p class="note">需連網使用。翻譯結果會立即顯示；羅馬拼音由 Google 在背景提供（不需下載字典）；標準假名需按鈕才會下載約 17 MB 字典。機器翻譯可能有誤，重要場合請讓店員確認。</p></div></section>
 <footer>一路平安，玩得開心！</footer>
 </main>
 <script>
@@ -310,25 +310,30 @@ function bd(d){return tmo(new Promise(function(res,rej){kuromoji.builder({dictPa
 function loadK(){if(tkz)return tkz;tkz=tmo((async function(){var er=[];for(var i=0;i<KB.length;i++){try{if(typeof kuromoji==="undefined")await ld(KB[i][0]);return await bd(KB[i][1])}catch(e){er.push(e.message)}}throw new Error(er.join("；"))})(),100000,"整體載入逾時（100 秒）");tkz.catch(function(){tkz=null});return tkz}
 var JV=null;function pv(){var v=speechSynthesis.getVoices();JV=v.filter(function(x){return /^ja/i.test(x.lang)})[0]||null;return v.length}
 if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv}
-function say(t){if(!("speechSynthesis" in window)||!window.SpeechSynthesisUtterance){msg("這個瀏覽器不支援語音播放，請改用 Android 的 Chrome。");return}
-var n=pv(),u=new SpeechSynthesisUtterance(t);u.lang="ja-JP";u.rate=.9;if(JV)u.voice=JV;else if(n)msg("找不到日語語音，請到手機「設定→語言→文字轉語音」安裝日文語音。");
-u.onerror=function(e){msg("播放失敗（"+(e.error||"未知")+"）。請確認媒體音量，並已安裝日文語音。")};
-speechSynthesis.cancel();setTimeout(function(){speechSynthesis.speak(u)},80)}
+function say(t){msg("");if(!("speechSynthesis" in window)||!window.SpeechSynthesisUtterance){msg("這個瀏覽器不支援語音播放，請改用 Android 的 Chrome 或 iPhone 的 Safari。");return}
+var v=speechSynthesis.getVoices(),j=v.filter(function(x){return /^ja/i.test(x.lang)})[0],u=new SpeechSynthesisUtterance(t);u.lang="ja-JP";u.rate=.9;if(j)u.voice=j;else if(v.length)msg("找不到日語語音，請到手機「設定→語言→文字轉語音」安裝日文語音。");
+u.onerror=function(e){if(e&&(e.error=="interrupted"||e.error=="canceled"))return;msg("播放失敗（"+((e&&e.error)||"未知")+"）。請確認媒體音量，並已安裝日文語音。")};
+speechSynthesis.cancel();speechSynthesis.speak(u)}
 function rf(l,t,cls,sp){var d=document.createElement("div");d.className="rf "+cls;var s=document.createElement("small");s.textContent=l;var v=document.createElement("div");v.className="v";v.textContent=t;var bt=document.createElement("div");bt.className="bt";var b=document.createElement("button");b.type="button";b.textContent="複製";b.onclick=function(){cp(t,b)};bt.appendChild(b);
 if(sp){var p=document.createElement("button");p.type="button";p.style.background="#E0463A";p.style.color="#fff";p.textContent="🔊 播放日語發音";p.onclick=function(){say(t)};bt.appendChild(p)}
 d.appendChild(s);d.appendChild(v);d.appendChild(bt);tout.appendChild(d)}
 function rc(l,cls){var d=document.createElement("div");d.className="rf "+cls;var s=document.createElement("small");s.textContent=l;var v=document.createElement("div");v.className="v";var bt=document.createElement("div");bt.className="bt";
 var b=document.createElement("button");b.type="button";b.textContent="複製";b.disabled=true;b.onclick=function(){cp(v.textContent,b)};
 var r=document.createElement("button");r.type="button";r.textContent="重試";r.style.display="none";bt.appendChild(b);bt.appendChild(r);d.appendChild(s);d.appendChild(v);d.appendChild(bt);tout.appendChild(d);
-return{st:function(t){v.textContent=t;v.style.opacity=.6;b.disabled=true;r.style.display="none"},ok:function(t){v.textContent=t;v.style.opacity=1;b.disabled=false;r.style.display="none"},bad:function(t,fn){v.textContent=t;v.style.opacity=1;b.disabled=true;r.style.display="";r.onclick=fn}}}
-function yomi(ja,ka,ro,my){var w="讀音載入中…（首次需下載日文字典，不影響上方翻譯結果）";ka.st(w);ro.st(w);
-loadK().then(function(tz){if(my!==RQ)return;var rr;try{rr=rom(tz.tokenize(ja))}catch(e){throw new Error("讀音轉換失敗："+e.message)}
-if(rr){ka.ok(rr.hira);ro.ok(rr.rom)}else{var n="這句含有無法取得可靠讀音的漢字，因此不顯示假名與羅馬拼音，以免誤導。";ka.st(n);ro.st(n)}}).catch(function(e){if(my!==RQ)return;var m="讀音元件載入失敗："+ce(e),f=function(){yomi(ja,ka,ro,my)};ka.bad(m,f);ro.bad(m,f)})}
+var o={f:0,st:function(t){o.f=0;v.textContent=t;v.style.opacity=.6;b.disabled=true;r.style.display="none"},ok:function(t){o.f=0;v.textContent=t;v.style.opacity=1;b.disabled=false;r.style.display="none"},bad:function(t,fn,lb){o.f=1;v.textContent=t;v.style.opacity=1;b.disabled=true;r.textContent=lb||"重試";r.style.display="";r.onclick=fn}};return o}
+function gr(ja){return tf("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=rm&sl=ja&tl=en&q="+encodeURIComponent(ja)).then(function(g){var a=(g&&g[0])||[],en=a.map(function(x){return x&&x[0]||""}).join("").trim().toLowerCase(),r=[];
+for(var i=0;i<a.length;i++){var x=a[i];if(x&&x[0]==null){var c=[x[2],x[3]];for(var k=0;k<2;k++){var v=c[k];if(typeof v=="string"&&/[A-Za-z]/.test(v)&&!/[\u3000-\u9fff\uff00-\uffef]/.test(v)&&v.trim().toLowerCase()!==en){r.push(v.trim());break}}}}
+var s=r.join(" ").trim();return s?s.charAt(0).toUpperCase()+s.slice(1):""})}
+function loadRomaji(ja,ro,my){ro.st("羅馬拼音載入中…（不影響上方翻譯與發音）");var f=function(){loadRomaji(ja,ro,my)};
+gr(ja).then(function(r){if(my!==RQ)return;if(r)ro.ok(r);else ro.bad("Google 沒有提供這句的羅馬拼音，可改按下方「取得假名讀音」用字典產生。",f)},function(e){if(my!==RQ)return;ro.bad("羅馬拼音載入失敗："+ce(e),f)})}
+function yomi(ja,ka,ro,my){var w="字典下載中（約 17 MB，行動網路可能需要一分鐘以上）…",t0=Date.now(),iv=setInterval(function(){if(my!==RQ){clearInterval(iv);return}ka.st(w+" 已等待 "+Math.round((Date.now()-t0)/1000)+" 秒")},1000);ka.st(w);
+loadK().then(function(tz){clearInterval(iv);if(my!==RQ)return;var rr;try{rr=rom(tz.tokenize(ja))}catch(e){throw new Error("讀音轉換失敗："+e.message)}
+if(rr){ka.ok(rr.hira);if(ro.f)ro.ok(rr.rom)}else ka.st("這句含有無法取得可靠讀音的漢字，因此不顯示假名，以免誤導。")}).catch(function(e){clearInterval(iv);if(my!==RQ)return;ka.bad("假名讀音載入失敗："+ce(e),function(){yomi(ja,ka,ro,my)})})}
 tgo.onclick=async function(){var q=tin.value.trim();if(!q){msg("請先輸入文字");return}var my=++RQ,d0=dir;setBusy(true);tout.innerHTML="";msg("");
 try{var ja,zh;if(d0=="zj"){zh=q;ja=await mt(q,"zh-TW","ja")}else{ja=q;zh=await mt(q,"ja","zh-TW")}
 if(my!==RQ)return;
-rf("日文原文",ja,"big",1);var ka=rc("假名讀音",""),ro=rc("Romaji 羅馬拼音","ro");rf(d0=="zj"?"中文解釋（你輸入的原句）":"中文翻譯",zh,"");
-setBusy(false);yomi(ja,ka,ro,my)}
+rf("日文原文",ja,"big",1);var ka=rc("假名讀音",""),ro=rc("Romaji 羅馬拼音（Google 提供）","ro");rf(d0=="zj"?"中文解釋（你輸入的原句）":"中文翻譯",zh,"");
+setBusy(false);loadRomaji(ja,ro,my);ka.bad("標準假名需要日文字典（約 17 MB），不會自動下載；按下按鈕才開始，不影響翻譯與發音。",function(){yomi(ja,ka,ro,my)},"取得假名讀音")}
 catch(e){if(my!==RQ)return;msg("翻譯失敗："+ce(e)+"。請檢查網路後再試一次。")}
 finally{if(my===RQ)setBusy(false)}};
 
