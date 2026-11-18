@@ -13,8 +13,8 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-behavior:smooth;scroll-padding-top:calc(72px + env(safe-area-inset-top,0px))}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Huninn","Noto Sans TC",system-ui,sans-serif;line-height:1.7;font-size:16px}
-nav{position:fixed;top:0;left:0;right:0;z-index:20;background:var(--bg);border-bottom:var(--b);padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;display:flex;gap:6px;justify-content:center;overflow-x:auto}
-nav a{color:var(--ink);text-decoration:none;border:var(--b);border-radius:99px;padding:2px 14px;white-space:nowrap;font-size:15px;background:var(--bg)}
+nav{position:fixed;top:0;left:0;right:0;z-index:20;background:var(--bg);border-bottom:var(--b);padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;display:flex;gap:6px;justify-content:flex-start;overflow-x:auto;overflow-y:hidden}
+nav a{flex-shrink:0;color:var(--ink);text-decoration:none;border:var(--b);border-radius:99px;padding:2px 14px;white-space:nowrap;font-size:15px;background:var(--bg)}
 nav a:nth-child(1){background:var(--pink)}nav a:nth-child(2){background:var(--yellow)}nav a:nth-child(3){background:var(--blue)}nav a:nth-child(4){background:var(--green)}nav a:nth-child(5){background:var(--pink)}nav a:nth-child(6){background:var(--blue)}nav a:nth-child(7){background:var(--yellow)}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:3px dashed var(--ink);outline-offset:3px}
 main{max-width:640px;margin:0 auto;padding:calc(64px + env(safe-area-inset-top,0px)) 16px 40px}
